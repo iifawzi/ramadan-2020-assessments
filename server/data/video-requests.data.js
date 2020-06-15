@@ -7,7 +7,7 @@ module.exports = {
   },
 
   getAllVideoRequests: (top) => {
-    return VideoRequest.find({}).sort({ submit_date: '-1' }).limit(top);
+    return VideoRequest.find({}).limit(top);
   },
 
   searchRequests: (topic) => {
