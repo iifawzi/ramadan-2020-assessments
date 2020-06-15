@@ -60,14 +60,35 @@ const getRequests = (()=>{
 
 
 
-const showRequests = ()=>{
+const showRequests = (request_by = 'new_first')=>{
   const requestsDiv = document.getElementById("listOfRequests");
+  const top_voted = document.getElementById("top_voted");
+  const new_first = document.getElementById("new_first");
   requestsDiv.innerHTML = "";
-  const sortedRequests = state.requests.sort((a,b)=>(b.votes.ups - b.votes.downs)-(a.votes.ups - a.votes.downs));
-  for (request of sortedRequests){
-    addRequestDiv(request);
+  if (request_by === 'top_voted'){
+    const requests = JSON.parse(JSON.stringify(state.requests));
+    const sortedRequests = requests.sort((a,b)=>(b.votes.ups - b.votes.downs)-(a.votes.ups - a.votes.downs));
+    top_voted.classList.add("active");
+    new_first.classList.remove("active");
+    for (request of requests){
+      addRequestDiv(request);
+    }
+  }else {
+    top_voted.classList.remove("active");
+    new_first.classList.add("active");
+    for (request of state.requests){
+      addRequestDiv(request);
+    }
   }
 };
+
+
+
+const sortRequests = (request_by)=>{
+  const requestsDiv = document.getElementById("listOfRequests");
+  requestsDiv.innerHTML = "";
+  request_by === 'top_voted' ?  showRequests("top_voted") :  showRequests();
+}
 
 
 
@@ -85,7 +106,6 @@ const updateVote = (e, id, vote_type)=>{
     const index = state.requests.findIndex(request=>request._id === id);
     state.requests[index].votes[vote_type] = data.votes[vote_type];
     e.target.parentNode.childNodes[1].innerHTML = data.votes.ups - data.votes.downs;
-    showRequests();
   });
 }
 

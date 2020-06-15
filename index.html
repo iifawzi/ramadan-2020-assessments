@@ -96,6 +96,16 @@
           </button>
         </form>
       </div>
+      <div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-primary active" id="new_first">
+            <input type="radio" name="options"  checked onclick="sortRequests('new_first')">  New First
+          </label>
+          <label class="btn btn-primary" id="top_voted">
+            <input type="radio" name="options" onclick="sortRequests('top_voted')"> Top Voted
+          </label>
+        </div>
+      </div>
       <hr />
       <h1 class="mb-4">List of requested videos</h1>
       <div id="listOfRequests">
