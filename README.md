@@ -1,4 +1,8 @@
-# Ramadan 2020 assessments
+# Singla page application without any frameworks or libraries, this idea introduced by SemiColon academy on youtube. 
+# i took the starter files, and made it on my own way. 
+# Thanks Semicolon academy <3
+
+
 
 > Hi all, this is the repo that holds the assessments that covers ramadan 2020 series on [Semicolon academy](https://www.youtube.com/SemicolonAcademy) youtube channel, no implementations here, only the assessments, you could check later the resolutions on different repos on github as well, or watch the series and build it up together.
 
@@ -6,7 +10,7 @@ In this repo you will find some given express server configured to make some bas
 
 ---
 
-## Assessment 1 (Junior level friendly)
+## Tasks: 
 
 1. After cloning the repo and installing the dependencies in the server folder, you should next [setup mongodb](https://docs.mongodb.com/manual/installation/) locally and copy the connection url to the required place in `server/models/mongo.config.js`.
 2. Navigate to server directory, run `npm install` then run `npm start` in the server folder (btw, cors are enabled so you can run server if you want on a separate port).
