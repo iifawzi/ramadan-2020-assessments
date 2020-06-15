@@ -45,7 +45,9 @@ const sendRequest = (e)=>{
  })
 .then(response => response.json())
 .then(request => {
+  state.requests.push(request);
   addRequestDiv(request);
+  showRequests();
 });
 }
 
@@ -59,7 +61,10 @@ const getRequests = (()=>{
 
 
 const showRequests = ()=>{
-  for (request of state.requests){
+  const requestsDiv = document.getElementById("listOfRequests");
+  requestsDiv.innerHTML = "";
+  const sortedRequests = state.requests.sort((a,b)=>(b.votes.ups - b.votes.downs)-(a.votes.ups - a.votes.downs));
+  for (request of sortedRequests){
     addRequestDiv(request);
   }
 };
@@ -77,8 +82,10 @@ const updateVote = (e, id, vote_type)=>{
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data);
+    const index = state.requests.findIndex(request=>request._id === id);
+    state.requests[index].votes[vote_type] = data.votes[vote_type];
     e.target.parentNode.childNodes[1].innerHTML = data.votes.ups - data.votes.downs;
+    showRequests();
   });
 }
 
@@ -91,5 +98,5 @@ const addRequestDiv = (request)=>{
   const requestsDiv = document.getElementById("listOfRequests");
   const requestNode = document.createElement("div");
   const contentOfNode = requestNode.innerHTML = htmlContent;
-  requestsDiv.prepend(requestNode);
+  requestsDiv.append(requestNode);
 }
