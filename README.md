@@ -1,6 +1,5 @@
 # Singla page application without any frameworks or libraries, this idea introduced by SemiColon academy on youtube. 
-# i took the starter files, and made it on my own way. 
-# Thanks Semicolon academy <3
+i took the starter files, and made it on my own way, Thanks Semicolon academy <3. 
 
 
 
