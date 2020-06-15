@@ -117,6 +117,6 @@ const addRequestDiv = (request)=>{
 
   const requestsDiv = document.getElementById("listOfRequests");
   const requestNode = document.createElement("div");
-  const contentOfNode = requestNode.innerHTML = htmlContent;
+  requestNode.innerHTML = htmlContent;
   requestsDiv.append(requestNode);
 }
