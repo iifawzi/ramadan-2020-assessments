@@ -21,6 +21,7 @@
                   class="form-control"
                   name="author_name"
                   placeholder="Write your name here"
+                  onkeyup="change.name(event)"
                 />
               </div>
             </div>
@@ -31,6 +32,7 @@
                   class="form-control"
                   name="author_email"
                   placeholder="Write your email here"
+                  onkeyup="change.email(event)"
                 />
               </div>
             </div>
@@ -44,6 +46,7 @@
                   class="form-control"
                   name="topic_title"
                   placeholder="Write your suggested topic here"
+                  onkeyup="change.title(event)"
                 />
               </div>
             </div>
@@ -54,6 +57,7 @@
                   class="form-control"
                   name="target_level"
                   placeholder="Write your name here"
+                  onchange="change.target(event)"
                 >
                   <option value="begineer">Beginner</option>
                   <option value="medium">Medium</option>
@@ -70,6 +74,7 @@
                   class="form-control"
                   name="topic_details"
                   placeholder="Write your topic in more details here"
+                  onkeyup="change.details(event)"
                 ></textarea>
               </div>
             </div>
@@ -80,12 +85,13 @@
                   class="form-control"
                   name="expected_result"
                   placeholder="Write what do you expect after watching this video"
+                  onkeyup="change.results(event)"
                 ></textarea>
               </div>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success mt-3">
+          <button type="submit" class="btn btn-success mt-3" onclick="sendRequest(event)">
             Send video request
           </button>
         </form>
@@ -125,5 +131,6 @@
         </div>
       </div>
     </div>
+    <script src="client.js"/>
   </body>
 </html>
