@@ -29,6 +29,13 @@ app.get('/video-request', async (req, res, next) => {
   next();
 });
 
+app.post('/searchRequests', async (req, res, next) => {
+  const {topic} = req.body;
+  const data = await VideoRequestData.searchRequests(topic);
+  res.send(data);
+  next();
+});
+
 app.get('/users', async (req, res, next) => {
   const response = await UserData.getAllUsers(req.body);
   res.send(response);

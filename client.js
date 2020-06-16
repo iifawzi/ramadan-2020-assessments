@@ -31,7 +31,9 @@ const state = {
     target_level: "",
   }, 
   requests: "",
+  filteredRequests:"",
   sort_type:"new_first",
+  keyWord: '',
 };
 
 
@@ -62,18 +64,14 @@ const getRequests = (()=>{
 
 
 
-const showRequests = (request_by = 'new_first', MainRequests = state.requests)=>{
-  const requestsDiv = document.getElementById("listOfRequests");
-  const top_voted = document.getElementById("top_voted");
-  const new_first = document.getElementById("new_first");
-  requestsDiv.innerHTML = "";
+const addRequests = (request_by,MainRequests)=>{
   if (request_by === 'top_voted'){
     state.sort_type = "top_voted";
     const requests = JSON.parse(JSON.stringify(MainRequests));
     const sortedRequests = requests.sort((a,b)=>(a.votes.ups - a.votes.downs)-(b.votes.ups - b.votes.downs));
     top_voted.classList.add("active");
     new_first.classList.remove("active");
-    for (request of requests){
+    for (request of sortedRequests){
       addRequestDiv(request);
     }
   }else {
@@ -84,26 +82,61 @@ const showRequests = (request_by = 'new_first', MainRequests = state.requests)=>
       addRequestDiv(request);
     }
   }
+}
+
+
+
+const showRequests =  async (request_by = 'new_first',e = null)=>{
+  const requestsDiv = document.getElementById("listOfRequests");
+  const top_voted = document.getElementById("top_voted");
+  const new_first = document.getElementById("new_first");
+  await filteredResuls(e);
+  requestsDiv.innerHTML = "";
+  addRequests(request_by,state.filteredRequests);
 };
 
 
 
-
 const sortRequests = (request_by)=>{
-  const requestsDiv = document.getElementById("listOfRequests");
-  requestsDiv.innerHTML = "";
   request_by === 'top_voted' ?  showRequests("top_voted") :  showRequests();
 };
 
 
 
-const searchResuls = (e)=>{
-  const requests = JSON.parse(JSON.stringify(state.requests));
-  const keyWord = e.target.value;
-  console.log(state.sort_type);
-  const filtered = requests.filter(request=>request.topic_title.toLowerCase().includes(keyWord.toLowerCase()));
-  showRequests(state.sort_type,filtered);
+const filteredResuls = async (e)=>{
+  let keyWord = '';
+  if (e != null){
+    keyWord = e.target.value;
+    state.keyWord = keyWord;
+  }else {
+    keyWord = state.keyWord;
+  }
+  const filtered = await fetch("http://localhost:7777/searchRequests", {
+    method:"POST", 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body:JSON.stringify({topic:keyWord})})
+  const requests = await filtered.json();
+  const filteredRequests = requests.filter(request=>request.topic_title.toLowerCase().includes(keyWord.toLowerCase()));
+  state.filteredRequests = filteredRequests;
 };
+
+const debounce = function(func, delay){
+  let debounceTimer 
+return function(...args){
+const context = this;
+clearTimeout(debounceTimer) 
+    debounceTimer = setTimeout(() => func(...args), delay);
+}
+}
+
+
+const searchResults =  debounce((e)=>{
+showRequests(state.sort_type,e);
+}, 500);
+
+
 
 
 

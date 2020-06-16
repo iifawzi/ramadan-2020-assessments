@@ -10,10 +10,10 @@ module.exports = {
     return VideoRequest.find({}).limit(top);
   },
 
+
   searchRequests: (topic) => {
-    return VideoRequest.find({ topic_title: topic })
+    return VideoRequest.find({ topic_title: {$regex: topic} })
       .sort({ addedAt: '-1' })
-      .limit(top);
   },
 
   getRequestById: (id) => {
