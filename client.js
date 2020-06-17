@@ -1,28 +1,34 @@
 // Forms: 
 const change = {
   name(e){
-    state.form.author_name = e.target.value;
-    checkValidation(e.target.value,[required],"author_name");
+    if (e)
+      state.form.author_name = e.target.value;
+    checkValidation(state.form.author_name,[required],"author_name");
   }, 
   email(e){
-    state.form.author_email = e.target.value;
-    checkValidation(e.target.value,[required],"author_email");
+    if (e)
+      state.form.author_email = e.target.value;
+    checkValidation(state.form.author_email,[required],"author_email");
   }, 
   title(e){
+    if (e)
     state.form.topic_title = e.target.value;
-    checkValidation(e.target.value,[required,MaxLength],"topic_title");
+    checkValidation(state.form.topic_title,[required,MaxLength],"topic_title");
   }, 
   details(e){
+    if (e)
     state.form.topic_details = e.target.value;
-    checkValidation(e.target.value,[required],"topic_details");
+    checkValidation(state.form.topic_details,[required],"topic_details");
   }, 
   results(e){
+    if(e)
     state.form.expected_result = e.target.value;
-    checkValidation(e.target.value,[required],"expected_result");
+    checkValidation(state.form.expected_result,[required],"expected_result");
   }, 
   target(e){
+    if (e)
     state.form.target_level = e.target.value;
-    checkValidation(e.target.value,[required],"target_level");
+    checkValidation(state.form.target_level,[required],"target_level");
   }, 
 };
 
@@ -56,13 +62,15 @@ const sendRequest = (e)=>{
   e.preventDefault();
   let isValid = true;
   Object.keys(state.validation).forEach(elem=>{
-    console.log(elem," ",state.validation[elem]);
       if (state.validation[elem] !== true){
         isValid = false;
       }
   })
   if (!isValid){
     document.getElementById("formError").classList.remove("hidden");
+    Object.keys(change).forEach(elem=>{
+      change[elem]();
+    });
   }else {
     document.getElementById("formError").classList.add("hidden");
     fetch('http://localhost:7777/video-request', {
