@@ -2,21 +2,27 @@
 const change = {
   name(e){
     state.form.author_name = e.target.value;
+    checkValidation(e.target.value,[required],"author_name");
   }, 
   email(e){
     state.form.author_email = e.target.value;
+    checkValidation(e.target.value,[required],"author_email");
   }, 
   title(e){
     state.form.topic_title = e.target.value;
+    checkValidation(e.target.value,[required,MaxLength],"topic_title");
   }, 
   details(e){
     state.form.topic_details = e.target.value;
+    checkValidation(e.target.value,[required],"topic_details");
   }, 
   results(e){
     state.form.expected_result = e.target.value;
+    checkValidation(e.target.value,[required],"expected_result");
   }, 
   target(e){
     state.form.target_level = e.target.value;
+    checkValidation(e.target.value,[required],"target_level");
   }, 
 };
 
@@ -30,6 +36,14 @@ const state = {
     expected_result: "",
     target_level: "",
   }, 
+  validation: {
+    author_name: false,
+    author_email: false,
+    topic_title: false,
+    topic_details: false,
+    expected_result: false,
+    target_level: false,
+  },
   requests: "",
   filteredRequests:"",
   sort_type:"new_first",
@@ -40,19 +54,31 @@ const state = {
 // Methods: 
 const sendRequest = (e)=>{
   e.preventDefault();
- fetch('http://localhost:7777/video-request', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(state.form),
- })
-.then(response => response.json())
-.then(request => {
-  state.requests.push(request);
-  addRequestDiv(request);
-  showRequests();
-});
+  let isValid = true;
+  Object.keys(state.validation).forEach(elem=>{
+    console.log(elem," ",state.validation[elem]);
+      if (state.validation[elem] !== true){
+        isValid = false;
+      }
+  })
+  if (!isValid){
+    document.getElementById("formError").classList.remove("hidden");
+  }else {
+    document.getElementById("formError").classList.add("hidden");
+    fetch('http://localhost:7777/video-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(state.form),
+     })
+    .then(response => response.json())
+    .then(request => {
+      state.requests.push(request);
+      addRequestDiv(request);
+      showRequests();
+    });
+  }
 };
 
 
@@ -122,6 +148,8 @@ const filteredResuls = async (e)=>{
   state.filteredRequests = filteredRequests;
 };
 
+
+
 const debounce = function(func, delay){
   let debounceTimer 
 return function(...args){
@@ -166,4 +194,47 @@ const addRequestDiv = (request)=>{
   const requestNode = document.createElement("div");
   requestNode.innerHTML = htmlContent;
   requestsDiv.prepend(requestNode);
+};
+
+
+// Validation : 
+    // Methods: 
+const required = (input)=>{
+  if (input || false){
+      return false;
+  }else {
+      return "Required";
+  }
+};
+
+const MaxLength = (input, max = 100)=>{
+  if ((input.length < max)){
+      return false;
+  }else {
+      return "Maximum Length is  " + max + " digit"
+  }
+};
+// Checker: 
+const checkValidation = (input,arrayOfChecks,Handler)=>{
+  let status = true;
+  let errors = []; 
+  arrayOfChecks.forEach(check=>{
+      const theCheck = check(input);
+     if (theCheck !== false){
+      errors.push(theCheck)
+      status = false;
+     }
+  });
+  const errorDiv = document.getElementById(Handler+"_error");
+  if (!status){
+    errors.forEach(error=>{
+      let errorSpan = `<span class='text-danger d-block'>${error}<span>`
+      if (!errorDiv.innerHTML.includes(error)){
+        errorDiv.innerHTML += errorSpan;
+      }
+    })
+  }else {
+    state.validation[Handler] = true;
+    errorDiv.innerHTML = "";
+  }
 };

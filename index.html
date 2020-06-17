@@ -8,9 +8,17 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     />
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div class="container my-5">
+      <div class="alert alert-danger hidden" id="formError" role="alert">
+        There's an error within the entered data
+      </div>
       <div class="formContainer my-5">
         <form action="" method="POST">
           <div class="row">
@@ -23,6 +31,7 @@
                   placeholder="Write your name here"
                   onkeyup="change.name(event)"
                 />
+                <div id="author_name_error"></div>
               </div>
             </div>
             <div class="col-md">
@@ -34,6 +43,7 @@
                   placeholder="Write your email here"
                   onkeyup="change.email(event)"
                 />
+                <div id="author_email_error"></div>
               </div>
             </div>
           </div>
@@ -48,6 +58,7 @@
                   placeholder="Write your suggested topic here"
                   onkeyup="change.title(event)"
                 />
+                <div id="topic_title_error"></div>
               </div>
             </div>
             <div class="col-md">
@@ -56,13 +67,14 @@
                 <select
                   class="form-control"
                   name="target_level"
-                  placeholder="Write your name here"
                   onchange="change.target(event)"
                 >
+                <option value="level" selected>Target Level</option>
                   <option value="begineer">Beginner</option>
                   <option value="medium">Medium</option>
                   <option value="advanced">Advanced</option>
                 </select>
+                <div id="target_level_error"></div>
               </div>
             </div>
           </div>
@@ -76,6 +88,7 @@
                   placeholder="Write your topic in more details here"
                   onkeyup="change.details(event)"
                 ></textarea>
+                <div id="topic_details_error"></div>
               </div>
             </div>
             <div class="col-md">
@@ -87,6 +100,7 @@
                   placeholder="Write what do you expect after watching this video"
                   onkeyup="change.results(event)"
                 ></textarea>
+                <div id="expected_result_error"></div>
               </div>
             </div>
           </div>
