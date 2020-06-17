@@ -58,6 +58,7 @@ const state = {
 
 
 // Methods: 
+// send new request to the db and update the view by showRequests
 const sendRequest = (e)=>{
   e.preventDefault();
   let isValid = true;
@@ -89,7 +90,7 @@ const sendRequest = (e)=>{
   }
 };
 
-
+// to get the request from db
 const getRequests = (()=>{
   fetch("http://localhost:7777/video-request")
   .then(response => response.json())
@@ -97,7 +98,7 @@ const getRequests = (()=>{
 })();
 
 
-
+// for adding a new request to the div
 const addRequests = (request_by,MainRequests)=>{
   if (request_by === 'top_voted'){
     state.sort_type = "top_voted";
@@ -119,7 +120,7 @@ const addRequests = (request_by,MainRequests)=>{
 }
 
 
-
+// to show the requests by calling add requersts method
 const showRequests =  async (request_by = 'new_first',e = null)=>{
   const requestsDiv = document.getElementById("listOfRequests");
   const top_voted = document.getElementById("top_voted");
@@ -130,13 +131,13 @@ const showRequests =  async (request_by = 'new_first',e = null)=>{
 };
 
 
-
+// for sorting the requests
 const sortRequests = (request_by)=>{
   request_by === 'top_voted' ?  showRequests("top_voted") :  showRequests();
 };
 
 
-
+// the request to the database for the asked word 
 const filteredResuls = async (e)=>{
   let keyWord = '';
   if (e != null){
@@ -157,7 +158,7 @@ const filteredResuls = async (e)=>{
 };
 
 
-
+// devounceing for the search input
 const debounce = function(func, delay){
   let debounceTimer 
 return function(...args){
@@ -167,14 +168,14 @@ clearTimeout(debounceTimer)
 }
 }
 
-
+// search results
 const searchResults =  debounce((e)=>{
 showRequests(state.sort_type,e);
 }, 500);
 
 
 
-
+// for down/up votes
 
 const updateVote = (e, id, vote_type)=>{
   console.log(id);
@@ -195,7 +196,7 @@ const updateVote = (e, id, vote_type)=>{
 
 
 
-
+// the div which will be added for each request 
 const addRequestDiv = (request)=>{
   const htmlContent =  `<div class='card mb-3'><div class='card-body d-flex justify-content-between flex-row'><div class='d-flex flex-column'><h3>${request.topic_title}</h3><p class='text-muted mb-2'>${request.topic_details}</p><p class='mb-0 text-muted'><strong>Expected results:</strong>${request.expected_result}</p></div><div class='d-flex flex-column text-center'><a class='btn btn-link' onClick='updateVote(event, "${request._id}", "ups")'>🔺</a><h3>${request.votes.ups - request.votes.downs}</h3><a class='btn btn-link' onClick='updateVote(event, "${request._id}", "downs")'>🔻</a></div></div><div class='card-footer d-flex flex-row justify-content-between'><div><span class='text-info'>${request.status}</span>&bullet; added by <strong>${request.author_name}</strong> on<strong>${request.submit_date}</strong></div><div class='d-flex justify-content-center flex-column 408ml-auto mr-2'><div class='badge badge-success'>${request.target_level}</div></div></div></div>`;
   const requestsDiv = document.getElementById("listOfRequests");
