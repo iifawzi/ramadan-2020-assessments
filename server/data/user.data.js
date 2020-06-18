@@ -14,6 +14,8 @@ module.exports = {
     const userObj = await User.findOne({ _id: userData._id });
     if (userObj) {
       return userObj;
+    }else {
+      return false;
     }
   },
 

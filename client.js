@@ -84,14 +84,20 @@ const state = {
         body:JSON.stringify({_id: user_id})})
         .then(response => response.json())
         .then(data => {
-          state.user._id = data._id;
-          state.user.author_email = data.author_email;
-          state.user.author_name = data.author_name;
+          if (data != false){
+            state.user._id = data._id;
+            state.user.author_email = data.author_email;
+            state.user.author_name = data.author_name;
+            document.querySelectorAll(".d-none").forEach(function(elem){
+              elem.classList.remove("d-none");
+            });
+           document.getElementById("loginForm").classList.add("d-none");
+          }else {
+            window.location.href = "http://localhost:5500/"
+          }
+
         });
-      document.querySelectorAll(".d-none").forEach(function(elem){
-        elem.classList.remove("d-none");
-      });
-     document.getElementById("loginForm").classList.add("d-none");
+   
 
     }
   }
