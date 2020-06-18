@@ -55,9 +55,16 @@ app.post('/user', async (req, res, next) => {
 });
 
 app.put('/video-request/vote', async (req, res, next) => {
-  const { id, vote_type } = req.body;
-  const response = await VideoRequestData.updateVoteForRequest(id, vote_type);
-  res.send(response);
+  const { id, vote_type, user_id } = req.body;
+  const request = await VideoRequestData.getRequestById(id);
+  if (request.voters[user_id]){
+    if (request.voters[user_id] == vote_type){
+      res.status(403).send({status: false,message: "You Can't Vote again"});
+    }else {
+      const response = await VideoRequestData.updateVoteForRequest(id, vote_type, user_id);
+      res.send(response);
+    }
+  }
   next();
 });
 

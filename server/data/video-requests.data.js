@@ -32,7 +32,7 @@ module.exports = {
     return VideoRequest.findByIdAndUpdate(id, updates, { new: true });
   },
 
-  updateVoteForRequest: async (id, vote_type) => {
+  updateVoteForRequest: async (id, vote_type, user_id) => {
     const oldRequest = await VideoRequest.findById({ _id: id });
     const other_type = vote_type === 'ups' ? 'downs' : 'ups';
     return VideoRequest.findByIdAndUpdate(
@@ -42,6 +42,9 @@ module.exports = {
           [vote_type]: ++oldRequest.votes[vote_type],
           [other_type]: oldRequest.votes[other_type],
         },
+        voters: {
+          [user_id]: vote_type
+        }
       }, 
       {useFindAndModify: false, new: true}, 
     );

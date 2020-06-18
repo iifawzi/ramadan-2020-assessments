@@ -261,18 +261,26 @@ showRequests(state.sort_type,e);
 // for down/up votes
 
 const updateVote = (e, id, vote_type)=>{
+  let  votedError =  document.getElementById("vote_error_"+id);
+  votedError.innerHTML = '';
+  votedError.classList.add("d-none");
   fetch("http://localhost:7777/video-request/vote", {
     method: "PUT", 
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({id, vote_type}),
+    body: JSON.stringify({id, vote_type, user_id: state.user._id}),
   })
   .then(response => response.json())
   .then(data => {
-    const index = state.requests.findIndex(request=>request._id === id);
-    state.requests[index].votes[vote_type] = data.votes[vote_type];
-    e.target.parentNode.childNodes[1].innerHTML = data.votes.ups - data.votes.downs;
+    if (data.status === false){
+      votedError.innerHTML = data.message;
+      votedError.classList.remove("d-none");
+    }else {
+      const index = state.requests.findIndex(request=>request._id === id);
+      state.requests[index].votes[vote_type] = data.votes[vote_type];
+      e.target.parentNode.childNodes[1].innerHTML = data.votes.ups - data.votes.downs;
+    }
   });
 };
 
@@ -280,7 +288,7 @@ const updateVote = (e, id, vote_type)=>{
 
 // the div which will be added for each request 
 const addRequestDiv = (request)=>{
-  const htmlContent =  `<div class='card mb-3'><div class='card-body d-flex justify-content-between flex-row'><div class='d-flex flex-column'><h3>${request.topic_title}</h3><p class='text-muted mb-2'>${request.topic_details}</p><p class='mb-0 text-muted'><strong>Expected results:</strong>${request.expected_result}</p></div><div class='d-flex flex-column text-center'><a class='btn btn-link' onClick='updateVote(event, "${request._id}", "ups")'>🔺</a><h3>${request.votes.ups - request.votes.downs}</h3><a class='btn btn-link' onClick='updateVote(event, "${request._id}", "downs")'>🔻</a></div></div><div class='card-footer d-flex flex-row justify-content-between'><div><span class='text-info'>${request.status}</span>&bullet; added by <strong>${request.author_name}</strong> on<strong>${request.submit_date}</strong></div><div class='d-flex justify-content-center flex-column 408ml-auto mr-2'><div class='badge badge-success'>${request.target_level}</div></div></div></div>`;
+  const htmlContent =  `<div class='card mb-3 d-flex flex-column'><div class='text-danger text-center d-none col-12' id='vote_error_${request._id}'></div><div class='card-body d-flex justify-content-between flex-row'><div class='d-flex flex-column'><h3>${request.topic_title}</h3><p class='text-muted mb-2'>${request.topic_details}</p><p class='mb-0 text-muted'><strong>Expected results:</strong>${request.expected_result}</p></div><div class='d-flex flex-column text-center'><a class='btn btn-link' onClick='updateVote(event, "${request._id}", "ups")'>🔺</a><h3>${request.votes.ups - request.votes.downs}</h3><a class='btn btn-link' onClick='updateVote(event, "${request._id}", "downs")'>🔻</a></div></div><div class='card-footer d-flex flex-row justify-content-between'><div><span class='text-info'>${request.status}</span>&bullet; added by <strong>${request.author_name}</strong> on<strong>${request.submit_date}</strong></div><div class='d-flex justify-content-center flex-column 408ml-auto mr-2'><div class='badge badge-success'>${request.target_level}</div></div></div></div>`;
   const requestsDiv = document.getElementById("listOfRequests");
   const requestNode = document.createElement("div");
   requestNode.innerHTML = htmlContent;
