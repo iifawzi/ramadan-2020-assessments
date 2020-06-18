@@ -44,7 +44,13 @@ app.get('/users', async (req, res, next) => {
 
 app.post('/users/login', async (req, res, next) => {
   const response = await UserData.createUser(req.body);
-  res.redirect(`http://localhost:5500?id=${response._id}`);
+  res.send(response._id);
+  next();
+});
+
+app.post('/user', async (req, res, next) => {
+  const response = await UserData.findUser(req.body);
+  res.send(response);
   next();
 });
 

@@ -10,6 +10,13 @@ module.exports = {
     return await newUser.save();
   },
 
+  findUser: async (userData) => {
+    const userObj = await User.findOne({ _id: userData._id });
+    if (userObj) {
+      return userObj;
+    }
+  },
+
   getAllUsers: () => {
     return User.find({});
   },

@@ -1,15 +1,5 @@
 // Forms: 
 const change = {
-  name(e){
-    if (e)
-      state.form.author_name = e.target.value;
-    checkValidation(state.form.author_name,[required],"author_name");
-  }, 
-  email(e){
-    if (e)
-      state.form.author_email = e.target.value;
-    checkValidation(state.form.author_email,[required],"author_email");
-  }, 
   title(e){
     if (e)
     state.form.topic_title = e.target.value;
@@ -31,24 +21,49 @@ const change = {
     checkValidation(state.form.target_level,[required],"target_level");
   }, 
 };
+const loginData = {
+  name(e){
+    if (e)
+      state.login.author_name = e.target.value;
+    checkValidation(state.login.author_name,[required],"author_name", "login");
+  }, 
+  email(e){
+    if (e)
+      state.login.author_email = e.target.value;
+    checkValidation(state.login.author_email,[required],"author_email", "login");
+  }, 
+}
 
 // State: 
 const state = {
   form: {
-    author_name: "",
-    author_email: "",
     topic_title: "",
     topic_details: "",
     expected_result: "",
     target_level: "",
+    author_name: "",
+    author_email: "",
   }, 
+  login: {
+    author_name: "",
+    author_email: "",
+  },
   validation: {
-    author_name: false,
-    author_email: false,
-    topic_title: false,
-    topic_details: false,
-    expected_result: false,
-    target_level: false,
+    login: {
+      author_name: false,
+      author_email: false,
+    },
+    form: {
+      topic_title: false,
+      topic_details: false,
+      expected_result: false,
+      target_level: false,
+    },
+  },
+  user:{
+    id: "",
+    author_email: "",
+    author_name:"",
   },
   requests: "",
   filteredRequests:"",
@@ -56,14 +71,71 @@ const state = {
   keyWord: '',
 };
 
+(function (){
+  if (window.location.search){
+    const urlParams = new URLSearchParams(window.location.search);
+    const user_id = urlParams.get('id');
+    if (user_id){
+      fetch("http://localhost:7777/user", {
+        method:"POST", 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({_id: user_id})})
+        .then(response => response.json())
+        .then(data => {
+          state.user._id = data._id;
+          state.user.author_email = data.author_email;
+          state.user.author_name = data.author_name;
+        });
+      document.querySelectorAll(".d-none").forEach(function(elem){
+        elem.classList.remove("d-none");
+      });
+     document.getElementById("loginForm").classList.add("d-none");
+
+    }
+  }
+})();
+
+// Login : 
+
+const login = (e)=>{
+  e.preventDefault();
+  let isValid = true;
+  Object.keys(state.validation.login).forEach(elem=>{
+      if (state.validation.login[elem] !== true){
+        isValid = false;
+      }
+  })
+  if (!isValid){
+    Object.keys(loginData).forEach(elem=>{
+      loginData[elem]();
+    });
+  }else {
+    fetch("http://localhost:7777/users/login", {
+      method:"POST", 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify(state.login)})
+      .then(response => response.json())
+      .then(id => {
+window.location.href = "http://localhost:5500?id="+id;
+state.user.id = id;
+state.user.author_email = state.login.author_email;
+state.user.author_name = state.login.author_name;
+      });
+  }
+}
+
 
 // Methods: 
 // send new request to the db and update the view by showRequests
 const sendRequest = (e)=>{
   e.preventDefault();
   let isValid = true;
-  Object.keys(state.validation).forEach(elem=>{
-      if (state.validation[elem] !== true){
+  Object.keys(state.validation.form).forEach(elem=>{
+      if (state.validation.form[elem] !== true){
         isValid = false;
       }
   })
@@ -74,12 +146,17 @@ const sendRequest = (e)=>{
     });
   }else {
     document.getElementById("formError").classList.add("hidden");
+    const data = {
+      ...state.form,
+      author_email: state.user.author_email,
+      author_name: state.user.author_name
+    };
     fetch('http://localhost:7777/video-request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(state.form),
+      body: JSON.stringify(data),
      })
     .then(response => response.json())
     .then(request => {
@@ -178,7 +255,6 @@ showRequests(state.sort_type,e);
 // for down/up votes
 
 const updateVote = (e, id, vote_type)=>{
-  console.log(id);
   fetch("http://localhost:7777/video-request/vote", {
     method: "PUT", 
     headers: {
@@ -224,7 +300,7 @@ const MaxLength = (input, max = 100)=>{
   }
 };
 // Checker: 
-const checkValidation = (input,arrayOfChecks,Handler)=>{
+const checkValidation = (input,arrayOfChecks,Handler,type = "form")=>{
   let status = true;
   let errors = []; 
   arrayOfChecks.forEach(check=>{
@@ -243,7 +319,7 @@ const checkValidation = (input,arrayOfChecks,Handler)=>{
       }
     })
   }else {
-    state.validation[Handler] = true;
+    state.validation[type][Handler] = true;
     errorDiv.innerHTML = "";
   }
 };

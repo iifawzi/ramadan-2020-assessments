@@ -16,37 +16,43 @@
   </head>
   <body>
     <div class="container my-5">
-      <div class="alert alert-danger hidden" id="formError" role="alert">
+      <div class="alert alert-danger hidden" id="formError">
         There's an error within the entered data
       </div>
       <div class="formContainer my-5">
-        <form action="" method="POST">
+        <form id="loginForm" class="">
           <div class="row">
-            <div class="col-md">
+            <div class="col-4 offset-4">
               <div class="form-group">
                 <label for="author_name">Your name *</label>
                 <input
                   class="form-control"
                   name="author_name"
                   placeholder="Write your name here"
-                  onkeyup="change.name(event)"
+                  onkeyup="loginData.name(event)"
                 />
                 <div id="author_name_error"></div>
               </div>
-            </div>
-            <div class="col-md">
               <div class="form-group">
                 <label for="author_email">Your email *</label>
                 <input
                   class="form-control"
                   name="author_email"
                   placeholder="Write your email here"
-                  onkeyup="change.email(event)"
+                  onkeyup="loginData.email(event)"
                 />
                 <div id="author_email_error"></div>
               </div>
+              <div>
+                <button type="submit" class="btn btn-danger mt-3 col-12" onclick="login(event)">
+                  Login
+                </button>
+              </div>
+
             </div>
           </div>
+        </form>
+        <form class="d-none" method="POST">
           <hr />
           <div class="row">
             <div class="col-md">
@@ -110,7 +116,8 @@
           </button>
         </form>
       </div>
-      <div class="d-flex flex-row justify-content-between">
+      <div class="d-none">
+      <div class="d-flex flex-row justify-content-between ">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <label class="btn btn-primary active" id="new_first">
             <input type="radio" name="options"  checked onclick="sortRequests('new_first')">  New First
@@ -123,9 +130,10 @@
           <input type="text" placeholder="Search..." style="width: 300px;" onkeyup="searchResults(event)"/>
         </div>
       </div>
+    </div>
       <hr />
-      <h1 class="mb-4">List of requested videos</h1>
-      <div id="listOfRequests">
+      <h1 class="mb-4 d-none">List of requested videos</h1>
+      <div id="listOfRequests" class="d-none">
 
       </div>
     </div>
