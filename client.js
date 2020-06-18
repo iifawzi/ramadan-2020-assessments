@@ -64,6 +64,7 @@ const state = {
     id: "",
     author_email: "",
     author_name:"",
+    user_role: "",
   },
   requests: "",
   filteredRequests:"",
@@ -88,6 +89,7 @@ const state = {
             state.user._id = data._id;
             state.user.author_email = data.author_email;
             state.user.author_name = data.author_name;
+            state.user.user_role = data.user_role;
             document.querySelectorAll(".d-none").forEach(function(elem){
               elem.classList.remove("d-none");
             });
